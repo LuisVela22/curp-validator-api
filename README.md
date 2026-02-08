@@ -1,41 +1,38 @@
-# Validador API - Sistema de Gestión de Expedientes
-### Desarrollado por: Velasco Jimenez Luis Antonio
+# SISTEMA INTEGRAL DE VALIDACIÓN DE EXPEDIENTES (VAL-API)
+### Liderazgo Técnico: Velasco Jimenez Luis Antonio
 
-API RESTful de alto rendimiento desarrollada con **NestJS** para la automatización y validación de documentos de identidad. El sistema integra **Prisma ORM** para una gestión de datos robusta en **PostgreSQL** y utiliza contenedores **Docker** para garantizar la portabilidad del entorno.
-
----
-
-## Despliegue en la Nube
-La infraestructura actual reside en **Azure Container Instances**, ofreciendo un entorno escalable y de alta disponibilidad.
-
-* **Documentación Interactiva (Postman)**: [Acceder a la Colección](https://documenter.getpostman.com/view/38310969/2sBXc8qj5L)
-* **Interfaz de Swagger (Directo)**: `http://20.242.196.59:3001/docs`
-* **Endpoint Base de Producción**: `http://20.242.196.59:3001/`
+Arquitectura robusta de servicios RESTful cimentada en **NestJS**, diseñada para la automatización de procesos de cumplimiento y validación de identidad. La solución implementa **Prisma ORM** para una capa de persistencia resiliente sobre **PostgreSQL**, garantizando la integridad de la data mediante una infraestructura totalmente contenida.
 
 ---
 
-## Ejecución del Proyecto
+## ESTRATEGIA DE DESPLIEGUE CLOUD
+La solución se encuentra actualmente en producción bajo una arquitectura de microservicios en **Azure Container Instances**, optimizada para el consumo bajo demanda y alta disponibilidad.
 
-### Requisitos de Sistema
-* **Docker Desktop**: Necesario para la orquestación de contenedores.
-* **Node.js v18+**: Motor de ejecución para desarrollo local.
+* **Documentación Técnica (Postman)**: [Consultar Especificaciones de API](https://documenter.getpostman.com/view/38310969/2sBXc8qj5L)
+* **Gateway de Producción**: `http://20.242.196.59:3001/`
 
-### Pruebas en Entorno de Producción (Cloud)
-Para validar el sistema sin configuración local, utilice el **Endpoint Base** mencionado arriba con los siguientes pasos:
-1.  Utilice las credenciales de prueba proporcionadas en la sección de "Guía de Pruebas".
-2.  Asegúrese de que las peticiones se realicen mediante protocolo HTTP al puerto 3001.
+---
 
-### Instalación y Ejecución Local
-1.  **Clonación del Repositorio**:
+## METODOLOGÍA DE EJECUCIÓN
+
+### Requerimientos de Infraestructura
+* **Docker Engine / Desktop**: Motor de orquestación para el despliegue de contenedores.
+* **Runtime Node.js v18+**: Entorno de ejecución para validaciones en desarrollo.
+
+### Validación en Entorno de Producción
+Para auditar el sistema sin dependencias locales, el evaluador puede interactuar directamente con el **Gateway de Producción** siguiendo el protocolo detallado en la sección "Protocolo de Pruebas".
+
+### Implementación Local
+1.  **Sincronización de Fuente**:
     ```bash
     git clone <url-del-repositorio>
     cd validator-api
     ```
-2.  **Gestión de Dependencias**:
+2.  **Aprovisionamiento de Dependencias**:
     ```bash
     npm install
     ```
-3.  **Despliegue con Docker**:
+3.  **Construcción y Despliegue de Contenedor**:
     ```bash
     docker build -t validator-api .
     docker run -p 3001:3001 validator-api
@@ -43,30 +40,30 @@ Para validar el sistema sin configuración local, utilice el **Endpoint Base** m
 
 ---
 
-## Escalabilidad y Arquitectura Serverless
-Este proyecto ha sido diseñado bajo principios de desacoplamiento que permiten su transición a arquitecturas **Serverless** con cambios mínimos en el núcleo de la lógica:
+## ARQUITECTURA Y ESCALABILIDAD
+El diseño modular del sistema permite una transición orgánica hacia paradigmas **Serverless** y arquitecturas orientadas a eventos (EDA):
 
-* **Azure Functions / AWS Lambda**: La lógica de los controladores puede ser migrada a funciones independientes (FaaS). Se recomienda el uso de wrappers como `@vendia/serverless-express` para adaptar la instancia de NestJS a eventos de API Gateway.
-* **Procesamiento de Archivos**: Para cargas masivas, el servicio de procesamiento de documentos puede dispararse mediante triggers de almacenamiento (S3 / Blob Storage), permitiendo una ejecución asíncrona y optimización de costos.
-
----
-
-## Stack Tecnológico
-* **Core**: NestJS (TypeScript)
-* **Persistencia**: Prisma ORM
-* **Base de Datos**: PostgreSQL (Azure Flexible Server)
-* **Infraestructura**: Azure Container Instances (ACI)
+* **Migración a FaaS (Azure Functions / AWS Lambda)**: Los controladores están desacoplados de la lógica de negocio, permitiendo su encapsulamiento en funciones independientes para optimizar costos operativos.
+* **Procesamiento Asíncrono**: El módulo de análisis de documentos es compatible con triggers de almacenamiento (S3 / Blob Storage), facilitando el procesamiento masivo de expedientes en segundo plano.
 
 ---
 
-## Guía de Pruebas
+## STACK TECNOLÓGICO
+* **Backend**: NestJS (TypeScript)
+* **Capa de Datos**: Prisma ORM
+* **Persistencia**: PostgreSQL (Azure Flexible Server)
+* **Infraestructura**: Azure Container Instances (ACI) / Docker
 
-### Credenciales de Acceso
-* **Usuario**: `test@xdevelop.com`
-* **Contraseña**: `password123`
+---
 
-### Flujo de Validación Técnica
-1.  **Autenticación**: Ejecutar `POST /auth/login` para recibir el `access_token`.
-2.  **Autorización**: Configurar el token como **Bearer Token** en el encabezado de las peticiones subsecuentes.
-3.  **Procesamiento**: Enviar archivo PDF vía `POST /documents/upload` bajo la llave `file` (multipart/form-data).
-4.  **Extracción**: El servicio analiza el buffer en tiempo real y persiste la **CURP** extraída en el expediente digital del usuario.
+## PROTOCOLO DE PRUEBAS (QA)
+
+### Credenciales de Auditoría
+* **Identificador**: `test@xdevelop.com`
+* **Credencial**: `password123`
+
+### Flujo de Verificación Operativa
+1.  **Autenticación**: Ejecución de `POST /auth/login` para la obtención del `access_token` (JWT).
+2.  **Seguridad**: Inyección del token bajo el esquema **Bearer Authentication** en el header de las peticiones.
+3.  **Análisis**: Carga de archivo PDF mediante `POST /documents/upload` utilizando el identificador `file` (multipart/form-data).
+4.  **Extracción**: El núcleo del sistema realiza el parseo del buffer, identifica la **CURP** y sincroniza el expediente digital de forma atómica.
