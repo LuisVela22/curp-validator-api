@@ -27,8 +27,8 @@ model User {
 model Document {
   id            String   @id @default(uuid())
   filename      String
-  type          String   // PDF o Excel [cite: 27]
-  extractedData String?  // El dato extraído (CURP/RFC) [cite: 29]
+  type          String   
+  extractedData String?  
   status        String   @default("PENDING")
   userId        String
   user          User     @relation(fields: [userId], references: [id])
