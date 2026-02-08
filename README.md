@@ -1,43 +1,63 @@
 # Validador API - Sistema de Gestión de Expedientes
 ### Desarrollado por: Velasco Jimenez Luis Antonio
 
-API RESTful desarrollada con **NestJS** para la automatización de validación de documentos de identidad. Implementa **Prisma ORM** para persistencia en **PostgreSQL** y despliegue mediante contenedores **Docker**.
+API RESTful de alto rendimiento desarrollada con **NestJS** para la automatización y validación de documentos de identidad. El sistema integra **Prisma ORM** para una gestión de datos robusta en **PostgreSQL** y utiliza contenedores **Docker** para garantizar la portabilidad del entorno.
 
 ---
 
 ## Despliegue en la Nube
-La aplicación se encuentra operativa en **Azure Container Instances**.
+La infraestructura actual reside en **Azure Container Instances**, ofreciendo un entorno escalable y de alta disponibilidad.
 
-* **Postman**: [https://documenter.getpostman.com/view/38310969/2sBXc8qj5L)
-* **URL del Backend Desplegado**: `http://20.242.196.59:3001/`
+* **Documentación Interactiva (Postman)**: [Acceder a la Colección](https://documenter.getpostman.com/view/38310969/2sBXc8qj5L)
+* **Interfaz de Swagger (Directo)**: `http://20.242.196.59:3001/docs`
+* **Endpoint Base de Producción**: `http://20.242.196.59:3001/`
+
 ---
 
 ## Ejecución del Proyecto
 
-### Requisitos
-* **Docker Desktop**
-* **Node.js v18+**
+### Requisitos de Sistema
+* **Docker Desktop**: Necesario para la orquestación de contenedores.
+* **Node.js v18+**: Motor de ejecución para desarrollo local.
 
-### Instalación y Correr en Local
-1. **Clonar repositorio**:
-   ```bash
-   git clone <url-del-repositorio>
-   cd validator-api
+### Pruebas en Entorno de Producción (Cloud)
+Para validar el sistema sin configuración local, utilice el **Endpoint Base** mencionado arriba con los siguientes pasos:
+1.  Utilice las credenciales de prueba proporcionadas en la sección de "Guía de Pruebas".
+2.  Asegúrese de que las peticiones se realicen mediante protocolo HTTP al puerto 3001.
 
-2. **Instalar dependencias**:
-   ```bash
+### Instalación y Ejecución Local
+1.  **Clonación del Repositorio**:
+    ```bash
+    git clone <url-del-repositorio>
+    cd validator-api
+    ```
+2.  **Gestión de Dependencias**:
+    ```bash
     npm install
+    ```
+3.  **Despliegue con Docker**:
+    ```bash
+    docker build -t validator-api .
+    docker run -p 3001:3001 validator-api
+    ```
 
-3. **Correr con Docker**:
-   ```bash
-   docker build -t validator-api .
-   docker run -p 3001:3001 validator-api
+---
 
-## Stack del proyecto
-* **Backend: NestJS (TypeScript)**
-* **ORM: Prisma**
-* **DB: PostgreSQL (Azure Flexible Server)**
-* **Cloud: Azure Container Instances**
+## Escalabilidad y Arquitectura Serverless
+Este proyecto ha sido diseñado bajo principios de desacoplamiento que permiten su transición a arquitecturas **Serverless** con cambios mínimos en el núcleo de la lógica:
+
+* **Azure Functions / AWS Lambda**: La lógica de los controladores puede ser migrada a funciones independientes (FaaS). Se recomienda el uso de wrappers como `@vendia/serverless-express` para adaptar la instancia de NestJS a eventos de API Gateway.
+* **Procesamiento de Archivos**: Para cargas masivas, el servicio de procesamiento de documentos puede dispararse mediante triggers de almacenamiento (S3 / Blob Storage), permitiendo una ejecución asíncrona y optimización de costos.
+
+---
+
+## Stack Tecnológico
+* **Core**: NestJS (TypeScript)
+* **Persistencia**: Prisma ORM
+* **Base de Datos**: PostgreSQL (Azure Flexible Server)
+* **Infraestructura**: Azure Container Instances (ACI)
+
+---
 
 ## Guía de Pruebas
 
@@ -45,8 +65,8 @@ La aplicación se encuentra operativa en **Azure Container Instances**.
 * **Usuario**: `test@xdevelop.com`
 * **Contraseña**: `password123`
 
-### Flujo de Validación
-1. **Login**: Realizar una petición `POST` a `/auth/login` para obtener el `access_token`.
-2. **Autorización**: Configurar el token obtenido como **Bearer Token** en la sección de Authorization de Postman.
-3. **Carga**: Realizar una petición `POST` a `/documents/upload` enviando el archivo PDF en la llave `file` (usando el formato `form-data`).
-4. **Resultado**: El sistema procesará el buffer del archivo y extraerá la **CURP** de forma automática para su almacenamiento.
+### Flujo de Validación Técnica
+1.  **Autenticación**: Ejecutar `POST /auth/login` para recibir el `access_token`.
+2.  **Autorización**: Configurar el token como **Bearer Token** en el encabezado de las peticiones subsecuentes.
+3.  **Procesamiento**: Enviar archivo PDF vía `POST /documents/upload` bajo la llave `file` (multipart/form-data).
+4.  **Extracción**: El servicio analiza el buffer en tiempo real y persiste la **CURP** extraída en el expediente digital del usuario.
