@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String
+  password  String
+  createdAt DateTime   @default(now())
+  documents Document[]
+}
+
+model Document {
+  id            String   @id @default(uuid())
+  filename      String
+  type          String   // PDF o Excel [cite: 27]
+  extractedData String?  // El dato extraído (CURP/RFC) [cite: 29]
+  status        String   @default("PENDING")
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+}
