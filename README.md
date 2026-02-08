@@ -9,7 +9,6 @@ API RESTful desarrollada con **NestJS** para la automatización de validación d
 La aplicación se encuentra operativa en **Azure Container Instances**.
 
 * **Postman**: [https://documenter.getpostman.com/view/38310969/2sBXc8qj5L)
-* **Endpoint Base**: `http://api-prueba.dxbzauafgjfngngr.eastus.azurecontainer.io:3001`
 * **URL del Backend Desplegado**: `http://20.242.196.59:3001/`
 ---
 
